@@ -42,7 +42,7 @@ Zero static credentials anywhere
 | Authorization boundary enforcement | ✅ Unauthorized pods receive 401 denial |
 | Zero hardcoded credentials in container image | ✅ Verified |
 | Zero Kubernetes Secrets used | ✅ Verified |
-| Compliance mapping | ✅ NIST 800-53 AC-6, PCI-DSS 4.0 Req 8.6.1 |
+| Compliance mapping | ✅ NIST AI RMF, OWASP LLM Top 10 LLM06, MITRE ATLAS |
 
 ## Authentication Flow
 
@@ -57,9 +57,9 @@ The Conjur JWT authenticator uses Kubernetes as an identity provider. When a pod
 
 ## Compliance Mapping
 
-| Finding | NIST 800-53 | PCI-DSS 4.0 |
+| Finding | Framework | Control |
 |---|---|---|
-| Hardcoded credentials eliminated | AC-6 Least Privilege | Requirement 8.6.1 |
+| Hardcoded credentials eliminated | LLM06 Excessive Agency | Requirement 8.6.1 |
 | Dynamic credential delivery | IA-5 Authenticator Management | Requirement 8.2.2 |
 | Audit trail for every retrieval | AU-2 Event Logging | Requirement 10.2.1 |
 | Authorization boundary enforcement | AC-3 Access Enforcement | Requirement 7.2.1 |
@@ -80,12 +80,18 @@ The Conjur JWT authenticator uses Kubernetes as an identity provider. When a pod
 ├── clean-policy.yml            # Conjur JWT authenticator policy
 ├── conjur-clusterrole.yml      # Kubernetes RBAC for Conjur
 ├── jwt-demo-app.yml            # Authorized pod manifest
-├── unauth-demo.yml             # Unauthorized pod (403 proof)
+├── unauth-demo.yml             # Unauthorized pod (401 proof)
 ├── app/
 │   ├── Dockerfile              # Alpine with curl
 │   └── app.py                  # Demo application
-└── authn-k8s.yml               # Legacy authn-k8s policy reference
+└── LICENSE
 ```
+
+> Note: Configuration files (docker-compose.yml, nginx.conf, policy YAMLs)
+> contain environment-specific values (Conjur account IDs, cluster endpoints,
+> namespace names) and are maintained outside the public repository.
+> The README documents the architecture, authentication flow, and proven
+> results. Contact curtis@igasecurityconsulting.com for implementation details.
 
 ## Demo Results
 
@@ -101,7 +107,7 @@ Conjur access token received (length: 708 chars)
 Step 2: Retrieving secret from Conjur vault...
 
 === RESULT ===
-DB_PASSWORD=SuperSecretDbPassword123
+DB_PASSWORD=[secret value retrieved successfully]
 
 Zero hardcoded credentials. Zero Kubernetes Secrets.
 Identity proven by Kubernetes service account JWT only.
@@ -126,6 +132,3 @@ Unauthorized identity cannot access protected secrets
 - [IAM Privilege Drift Detection Agent](https://github.com/IAM-AI-Security/IAM-Privilege-Drift-Agent)
 - [NHI Lifecycle Automation Agent](https://github.com/IAM-AI-Security/NHI-Lifecycle-Automation-Agent)
 
-## Author
-
-Chris Harris | Identity Security Architect | Bridging PAM and AI Automation
